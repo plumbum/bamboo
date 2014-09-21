@@ -246,4 +246,33 @@ plantslib:register_generate_plant({
   "bamboo:bamboo_top"
 )
 
+function register_at_moreblocks(name, nodename)
+	local ndef = minetest.registered_nodes[nodename]
+	local groups = {}
+	for k, v in pairs(ndef.groups)
+		-- Ignore wood and stone groups to not make them usable in crafting:
+		do if k ~= "wood" and k ~= "stone" then
+			groups[k] = v
+		end
+	end
+	local drop
+	if type(ndef.drop) == "string" then
+		drop = ndef.drop:sub(9)
+	end
+	stairsplus:register_all("moreblocks", name, nodename, {
+		description = ndef.description,
+		drop = drop,
+		groups = groups,
+		sounds = ndef.sounds,
+		tiles = ndef.tiles,
+		sunlight_propagates = true,
+	})
+end
+
+if minetest.get_modpath("moreblocks") then
+    register_at_moreblocks("bamboo_block", "bamboo:block")
+    register_at_moreblocks("bamboo_block_dry", "bamboo:block_dry")
+end
+
+
 print("[Bamboo] Loaded!")
